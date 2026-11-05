@@ -1,0 +1,2 @@
+/* Scope everything under .app-<your-id> so it can't leak into other tabs. */
+.app-my-app .example{ }

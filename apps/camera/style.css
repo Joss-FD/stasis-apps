@@ -1,0 +1,270 @@
+/* Cert Scanner — scoped to .app-camera. Mobile first. */
+
+.app-camera{ display:flex; flex-direction:column; gap:14px; padding-bottom:70px; }
+.app-camera .header{ margin-bottom:14px; }
+.app-camera h2{ margin:0; font-size:20px; letter-spacing:-0.02em; display:flex; align-items:center; gap:8px; }
+
+/* ----- viewfinder ----- */
+
+.app-camera .cs-stage{
+  position:relative;
+  aspect-ratio:4 / 3;
+  max-height:60vh;
+  width:100%;
+  border-radius:20px;
+  overflow:hidden;
+  background:#020617;
+  border:2px solid rgba(148,163,184,.18);
+  transition:border-color .2s ease;
+}
+.app-camera .cs-stage.cs-hit-ok{ animation:cs-hit-ok .7s ease; }
+.app-camera .cs-stage.cs-hit-warn{ animation:cs-hit-warn .7s ease; }
+@keyframes cs-hit-ok{ 0%,40%{ border-color:var(--good); box-shadow:0 0 0 4px rgba(34,197,94,.25);} 100%{} }
+@keyframes cs-hit-warn{ 0%,40%{ border-color:var(--mid); box-shadow:0 0 0 4px rgba(250,204,21,.22);} 100%{} }
+
+.app-camera .cs-video{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition:opacity .2s ease;
+}
+.app-camera .cs-video.cs-live{ opacity:1; }
+.app-camera .cs-mirror .cs-video{ transform:scaleX(-1); }
+
+.app-camera .cs-guide{
+  position:absolute;
+  left:12%; right:12%; top:28%; bottom:28%;
+  border-radius:14px;
+  box-shadow:0 0 0 9999px rgba(2,6,23,.35);
+  border:2px solid rgba(255,255,255,.75);
+  pointer-events:none;
+}
+
+.app-camera .cs-topbar{
+  position:absolute; top:10px; left:10px; right:10px;
+  display:flex; justify-content:space-between; align-items:center;
+  pointer-events:none;
+}
+.app-camera .cs-count-chip{
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(2,6,23,.7);
+  font-size:13px; font-weight:800;
+  backdrop-filter:blur(6px);
+}
+.app-camera .cs-cam-buttons{ display:flex; gap:8px; pointer-events:auto; }
+.app-camera .cs-icon{
+  width:42px; height:42px;
+  padding:0;
+  border-radius:50%;
+  background:rgba(2,6,23,.7);
+  color:var(--text);
+  font-size:17px;
+  backdrop-filter:blur(6px);
+  border:1px solid rgba(148,163,184,.25);
+}
+.app-camera .cs-icon.on{ background:var(--mid); color:#1f2937; }
+
+.app-camera .cs-pill{
+  position:absolute; left:50%; bottom:14px;
+  transform:translateX(-50%);
+  padding:9px 14px;
+  border-radius:999px;
+  font-size:14px; font-weight:800;
+  white-space:nowrap;
+  backdrop-filter:blur(6px);
+  font-variant-numeric:tabular-nums;
+}
+.app-camera .cs-pill-info{ background:rgba(2,6,23,.72); color:var(--text); }
+.app-camera .cs-pill-ok{ background:var(--good); color:#052e16; }
+.app-camera .cs-pill-warn{ background:var(--mid); color:#422006; }
+
+.app-camera .cs-idle{
+  position:absolute; inset:0;
+  width:100%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+  background:radial-gradient(circle at center, rgba(56,189,248,.10), transparent 60%);
+  color:var(--text);
+  border-radius:0;
+  padding:20px;
+  text-align:center;
+}
+.app-camera .cs-idle:hover{ transform:none; }
+.app-camera .cs-idle-icon{ font-size:42px; }
+.app-camera .cs-idle-title{ font-size:18px; font-weight:900; }
+.app-camera .cs-idle-sub{ font-size:13px; font-weight:600; color:var(--muted); max-width:300px; line-height:1.4; }
+
+.app-camera .cs-confirm{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(2,6,23,.55);
+  padding:16px;
+}
+.app-camera .cs-confirm-box{
+  width:100%; max-width:340px;
+  background:var(--panel);
+  border:1px solid rgba(148,163,184,.25);
+  border-radius:20px;
+  padding:18px;
+  text-align:center;
+  box-shadow:var(--shadow);
+}
+.app-camera .cs-confirm-label{ color:var(--muted); font-size:13px; font-weight:700; }
+.app-camera .cs-confirm-num{
+  font-size:34px; font-weight:900;
+  letter-spacing:.02em;
+  margin:6px 0 16px;
+  font-variant-numeric:tabular-nums;
+}
+.app-camera .cs-confirm-actions{ display:grid; grid-template-columns:1fr 1.6fr; gap:10px; }
+.app-camera .cs-confirm-actions button{ padding:15px; font-size:16px; }
+
+/* ----- options + manual entry ----- */
+
+.app-camera .cs-options{
+  display:flex; flex-wrap:wrap; gap:10px 22px;
+  margin-top:14px;
+}
+.app-camera .cs-switch{
+  display:inline-flex; align-items:center; gap:10px;
+  font-size:15px; font-weight:700; color:var(--text);
+  cursor:pointer;
+  user-select:none;
+  min-height:36px;
+}
+.app-camera .cs-switch input{ position:absolute; opacity:0; width:0; height:0; }
+.app-camera .cs-switch-track{
+  position:relative;
+  width:44px; height:26px;
+  border-radius:999px;
+  background:rgba(148,163,184,.3);
+  transition:background .15s ease;
+  flex:none;
+}
+.app-camera .cs-switch-track::after{
+  content:'';
+  position:absolute; top:3px; left:3px;
+  width:20px; height:20px;
+  border-radius:50%;
+  background:#fff;
+  transition:transform .15s ease;
+}
+.app-camera .cs-switch input:checked + .cs-switch-track{ background:var(--accent); }
+.app-camera .cs-switch input:checked + .cs-switch-track::after{ transform:translateX(18px); }
+.app-camera .cs-switch input:focus-visible + .cs-switch-track{ box-shadow:0 0 0 3px rgba(56,189,248,.35); }
+
+.app-camera .cs-manual{
+  display:flex; gap:8px;
+  margin-top:12px;
+}
+.app-camera .cs-manual input{ flex:1; min-width:0; font-variant-numeric:tabular-nums; }
+.app-camera .cs-manual button{ flex:none; padding:0 18px; }
+
+/* ----- list ----- */
+
+.app-camera .cs-list-head{
+  display:flex; justify-content:space-between; align-items:center;
+}
+.app-camera .cs-count{
+  font-size:14px; font-weight:800;
+  padding:3px 10px;
+  border-radius:999px;
+  background:rgba(56,189,248,.14);
+  color:#7dd3fc;
+}
+.app-camera .cs-link{
+  background:none; padding:8px 4px;
+  color:#fca5a5; font-weight:700;
+}
+
+.app-camera .cs-list-actions{
+  display:flex; gap:10px;
+  margin-top:14px;
+}
+.app-camera .cs-copy{ flex:1; padding:15px; font-size:16px; }
+.app-camera .cs-list-actions .secondary{ padding:15px 18px; font-size:16px; }
+
+.app-camera .cs-list{
+  list-style:none;
+  counter-reset:cs;
+  margin:14px 0 0;
+  padding:0;
+  display:flex; flex-direction:column; gap:6px;
+}
+.app-camera .cs-item{
+  counter-increment:cs;
+  display:flex; align-items:center; gap:12px;
+  padding:6px 6px 6px 14px;
+  border-radius:12px;
+  background:rgba(2,6,23,.55);
+  border:1px solid rgba(148,163,184,.12);
+}
+.app-camera .cs-item::before{
+  content:counter(cs);
+  min-width:22px;
+  color:var(--muted);
+  font-size:12px; font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.app-camera .cs-cert{
+  flex:1;
+  font-size:17px; font-weight:800;
+  letter-spacing:.03em;
+  font-variant-numeric:tabular-nums;
+  user-select:all;
+}
+.app-camera .cs-remove{
+  width:38px; height:38px;
+  padding:0;
+  border-radius:10px;
+  background:transparent;
+  color:var(--muted);
+  font-size:15px;
+}
+.app-camera .cs-remove:hover{ background:rgba(239,68,68,.15); color:#fca5a5; transform:none; }
+.app-camera .cs-flash-row{ animation:cs-row-new 1.4s ease; }
+.app-camera .cs-flash-dup{ animation:cs-row-dup 1.2s ease; }
+@keyframes cs-row-new{ 0%{ background:rgba(34,197,94,.3); border-color:rgba(34,197,94,.6);} 100%{} }
+@keyframes cs-row-dup{ 0%,30%{ background:rgba(250,204,21,.25); border-color:rgba(250,204,21,.6);} 100%{} }
+
+.app-camera .cs-empty{
+  margin-top:14px;
+  padding:18px;
+  text-align:center;
+  color:var(--muted);
+  font-size:14px;
+  border:1px dashed rgba(148,163,184,.25);
+  border-radius:14px;
+}
+
+/* ----- toast ----- */
+
+.app-camera .cs-toast{
+  position:fixed;
+  left:50%; bottom:max(18px, env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  z-index:50;
+  display:flex; align-items:center; gap:14px;
+  max-width:calc(100vw - 24px);
+  padding:12px 12px 12px 16px;
+  border-radius:14px;
+  background:#f8fafc;
+  color:#0f172a;
+  font-size:14px; font-weight:700;
+  box-shadow:0 12px 30px rgba(0,0,0,.4);
+}
+.app-camera .cs-toast[hidden]{ display:none; }
+.app-camera .cs-toast button{
+  padding:7px 12px;
+  background:#0f172a;
+  color:#7dd3fc;
+  border-radius:10px;
+}
+
+/* [hidden] must win over the display rules above */
+.app-camera [hidden]{ display:none !important; }
+
+@media(min-width:761px){
+  .app-camera .cs-stage{ aspect-ratio:16 / 9; }
+}
